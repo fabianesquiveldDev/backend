@@ -1,0 +1,454 @@
+### obtener un persona por cve 
+curl http://localhost:3000/api/personas/6
+
+### actualizar persona
+PATCH  http://localhost:3000/api/personas/3
+Content-Type: application/json
+
+{"paterno": "Oliva"}
+
+### REGISTRA UNA PERSONA nueva
+POST  http://localhost:3000/api/personas
+Content-Type: application/json
+
+{
+    "cve_situacion_conyugal": 1,
+    "nombre": "Felipe",
+    "paterno": "Hernández",
+    "materno": "Sánchez",
+    "curp": "HESL921120HMCRZM05",
+    "direccion": "Calle Ficticia 123, Colonia Imaginaria, Ciudad de México",
+    "rfc": "HESL921120ABC",
+    "telefonos": "5511223344",
+    "fecha_nacimiento": "1992-11-20T00:00:00Z",
+    "fotografia": "http://example.com/fotos/luis_hernandez.png",
+    "sexo": 1,
+    "email": "felipe.hernandez@example.com"
+    }
+
+
+### verificar curp
+curl http://localhost:3000/api/personas/check-curp/HESL921120HMCRZM05
+
+### verificar rfc
+curl http://localhost:3000/api/personas/check-rfc/HESL921120ABC
+
+
+### verificar email
+curl http://localhost:3000/api/personas/check-email/felipe.hernandez@example.com
+
+### verificar telefono
+curl http://localhost:3000/api/personas/check-telefono/5511223344
+
+    
+###----------> USUARIOS<-------------------------
+
+### Crear un nuevo usuario
+POST http://localhost:3000/api/usuarios
+Content-Type: application/json
+
+{
+    "cve_usuarios": 6,
+    "nombre_usuario": "felipesan",
+    "contrasena": "felipesan!",
+    "activo": 1,
+    "cve_roles": 3
+}
+
+
+
+### verificar nombnre de usuario
+curl http://localhost:3000/api/usuarios/check-username/felipesan
+
+
+### Ver el usuario por cve
+curl http://localhost:3000/api/usuarios/1
+
+### actualizar usuarios
+PATCH  http://localhost:3000/api/usuarios/6
+Content-Type: application/json
+
+{
+    "contrasena": "1234Segura!"
+}
+//   1234Segura!
+### probar la utenticacion 
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "nombre_usuario": "joseandres",
+    "contrasena": "1234Segura!"
+}
+
+### confirmar la sucursal para el medico
+curl http://localhost:3000/api/medicos/login/sucursal/23
+
+
+
+### obtener todas las usuarios por el rol 2 (tambien consulta a usuarios_sucursales)
+curl http://localhost:3000/api/usuarios/admin/2
+
+
+### obtener  usuarios-personas - cve_usuarios
+GET http://localhost:3000/api/usuarios/persona/3
+
+
+###obtener todos los usuarios (solo usuarios)
+GET http://localhost:3000/api/usuarios
+
+
+### obtener la scuursal del admin 
+curl http://localhost:3000/api/usuarios/sucursal/3
+
+
+### obtener la scuursal del admin 
+curl http://localhost:3000/api/usuarios/medico/local/1
+### --------------> USUARIOS_SUCURSALES <-------------- ###
+
+###crar
+POST   http://localhost:3000/api/usuariosSucursales
+Content-Type: application/json
+
+{
+    "cve_usuarios": 3,
+    "cve_sucursales": 1,
+    "active":1
+}
+
+
+### actualizar
+PATCH  http://localhost:3000/api/usuariosSucursales/2
+Content-Type: application/json
+
+{
+    "cve_usuarios": 2
+}
+
+
+
+### --------------> PACIENTES <-------------- ###
+
+### Crear paciente
+
+POST http://localhost:3000/api/pacientes
+Content-Type: application/json
+
+{
+    "cve_pacientes": 26,
+    "fecha_ingreso": "1985-05-15T00:00:00Z",
+    "activo": 1
+}
+
+### ver pacientes
+curl http://localhost:3000/api/pacientes/4
+
+###actualizar pacientes 
+PATCH  http://localhost:3000/api/pacientes/4
+Content-Type: application/json
+
+{"cedulas_profesionales": "ABC1234567"}
+
+### --------------> Medicos <-------------- ###
+
+
+### Crear medico
+POST http://localhost:3000/api/medicos
+Content-Type: application/json
+
+{
+    "cve_medicos": 6,
+    "cedulas_profesionales": "ABC1234567",
+    "fecha_ingreso": "2024-03-10T09:00:00Z",
+    "activo": 1
+}
+
+### ver medicos por cve
+curl http://localhost:3000/api/medicos/23
+
+###actualizar medicos 
+PATCH  http://localhost:3000/api/medicos/6
+Content-Type: application/json
+
+{"fecha_ingreso": "2000-05-15T00:00:00Z"}
+
+###todos lso medico
+curl http://localhost:3000/api/medicos
+
+### ---------> SUCURSALES <---------
+
+### Crear sucursales
+POST http://localhost:3000/api/sucursales
+Content-Type: application/json
+
+{
+    "cve_ciudades": 1,
+    "cve_estados": 27,
+    "nombre": "Sucursal Centro Villahermosa"
+}
+### ver sucursales
+curl http://localhost:3000/api/sucursales/7
+
+###actualizar sucursales 
+PATCH  http://localhost:3000/api/sucursales/1
+Content-Type: application/json
+
+{
+    "nombre": "Cárdenas",
+    "cve_ciudades": 2,
+    "cve_estados": 27
+}
+
+### obtener todas las sucursales
+curl http://localhost:3000/api/                 
+
+### buscar por algo 
+GET http://localhost:3000/api/sucursales/search?name=Villa
+
+### obtener la distrubuicoin de una sucursal
+curl http://localhost:3000/api/sucursales/distribucion/1
+
+
+### ---------> PISOS <---------
+
+
+### Crear pisos
+POST http://localhost:3000/api/pisos
+Content-Type: application/json
+
+{
+    "cve_sucursales": 2,
+    "nombre": "Planta alta",
+    "numero": 3
+}
+### ver pisos por cvd
+curl http://localhost:3000/api/pisos/1
+
+###actualizar pisos 
+PATCH  http://localhost:3000/api/pisos/1
+Content-Type: application/json
+
+{
+    "nombre": "Planta Baja"
+}
+
+### obtener todas las pisos
+curl http://localhost:3000/api/pisos
+
+### ver pisos por cve_sucursal
+curl http://localhost:3000/api/pisos/sucursales/1
+
+
+### SITUACIONES CONYUGALES
+curl http://localhost:3000/api/sutuacionconyugal
+
+
+
+### ---------> CONSULTORIOS <---------
+
+
+### Crear CONSULTORIOS
+POST http://localhost:3000/api/consultorios
+Content-Type: application/json
+
+{
+    "cve_sucursales": 2,
+    "cve_pisos": 3,
+    "nombre": "Consultorio tres",
+    "numero": 101,
+    "activo": 1
+}
+### ver CONSULTORIOS por cve
+curl http://localhost:3000/api/consultorios/1
+
+###actualizar CONSULTORIOS 
+PATCH  http://localhost:3000/api/consultorios/1
+Content-Type: application/json
+
+{    
+    "nombre": "Consultorio Familiar"
+}
+
+
+
+### obtener todas las consultorios
+curl http://localhost:3000/api/consultorios
+
+### ver por sucursal
+curl http://localhost:3000/api/consultorios/sucursales/2
+
+
+### ---------> SERVICIOS <---------
+
+
+### Crear SERVICIOS
+POST http://localhost:3000/api/servicios
+Content-Type: application/json
+
+{
+    "nombre": "Consulta General",
+    "precios": 500.00
+}
+### ver un  SERVICIO
+curl http://localhost:3000/api/servicios/1
+
+###actualizar SERVICIOS 
+PATCH  http://localhost:3000/api/servicios/3
+Content-Type: application/json
+
+{    
+    "nombre": "Ginecologia"
+}
+
+###obtener todos los servicios con la tabla servicios_sucursales
+curl http://localhost:3000/api/servicios/todos
+
+
+### ---------------> SUCURSALES_SERVICIOS <---------------
+### obtener todos los sucursales con por un cve_servicos y devolver un true 
+curl http://localhost:3000/api/sucursalesServicios/todos/6
+
+
+### crear
+POST http://localhost:3000/api/sucursalesServicios
+Content-Type: application/json
+
+{    
+    "cve_servicios":2,
+    "cve_sucursales":5,
+    "active": 1
+}
+
+
+### obtenerserucal.es y servicisopara la app movil
+curl http://localhost:3000/api/sucursalesServicios/sucursalesServiciosAll
+### ---------> ESPECIALIDADES <---------
+
+
+### Crear ESPECIALIDADES
+POST http://localhost:3000/api/especialidades
+Content-Type: application/json
+
+{
+    "nombre": "Pediatría"
+}
+### ver ESPECIALIDADES
+curl http://localhost:3000/api/especialidades/1
+
+###actualizar ESPECIALIDADES 
+PATCH  http://localhost:3000/api/especialidades/1
+Content-Type: application/json
+
+{    
+    "nombre": "Pediatría 2"
+}
+
+###todas las especialidaeds
+curl http://localhost:3000/api/especialidades/
+
+### ---------> OBTENER LOS ESTADOS <---------
+
+curl http://localhost:3000/api/ciudades
+
+
+###----------------- MEDICOS_ESPECIALIDADES -------------------------
+
+###no asignadas
+curl http://localhost:3000/api/medicosEspecialidades/noAsiganda/23
+
+###asigandas 
+curl http://localhost:3000/api/medicosEspecialidades/Asiganda/23
+
+###crear
+POST   http://localhost:3000/api/medicosEspecialidades
+Content-Type: application/json
+
+{
+    "cve_medicos":22,
+    "cve_especialidad":5
+}
+
+
+#### ---- MEDICOS_CONSULTORIOS-----
+
+###obtener todops los medicos 
+curl http://localhost:3000/api/medicosConsultorios
+
+### consultorios asigandas 
+curl http://localhost:3000/api/medicosConsultorios/consultorioAasignados/6
+
+
+
+### consultorios por asigandas 
+curl http://localhost:3000/api/medicosConsultorios/6/asignar-consultorios
+
+###obtener todops los medicos de admin
+curl http://localhost:3000/api/medicosConsultorios/localAdmin/1
+
+
+###obtener para asiganr 
+curl http://localhost:3000/api/medicosConsultorios/consultorioAsignadosLocal/1/23
+### HORARIO LABORAL
+
+###obtener dias
+curl http://localhost:3000/api/horarioLaboral/dias
+
+
+###obtener los horario por cve_medico_consultorio
+curl http://localhost:3000/api/horarioLaboral/:cve
+
+
+###DISPONIBILIDADES
+
+###obtener todas las disponivilidades de un medicos por cve_medico_consultorios
+curl http://localhost:3000/api/disponibilidad/5
+
+
+### actualizar 
+PATCH  http://localhost:3000/api/disponibilidad/3
+Content-Type: application/json
+
+{    
+    "ocupado": true,
+    "motivoconsulta": "hoal como estas tengo fodlor de pancha"
+}
+
+
+###----------CITAS ------------------
+POST   http://localhost:3000/api/citas
+Content-Type: application/json
+
+{
+    "cve_medicos":22,
+    "cve_pacientes":25,
+    "cve_disponibilidad":3,
+    "cve_medico_consultorio":5
+}
+
+###obteer la citas del paciente
+curl http://localhost:3000/api/citas/obtenerCitaspacinetes/25
+
+
+###obteer la citas del medico en su sucursal
+curl http://localhost:3000/api/citas/obtenerCitasmedicoSucursal/23/1
+
+
+###Asignacion medico paciente
+curl http://localhost:3000/api/asignacionMP/medico/23
+
+
+###PERIL MEDICO
+POST   http://localhost:3000/api/perfilMedicos
+Content-Type: application/json
+
+{
+    "cve_pacientes":26,
+    "creado_por": "automatico desde la app movil"
+}
+
+### obtener perfil medico por cve_paciente
+curl http://localhost:3000/api/perfilMedicos/26
+
+
+### obtener auditorias
+curl http://localhost:3000/api/auditoria

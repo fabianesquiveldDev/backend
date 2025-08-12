@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "triple-nectar-467720-g4",
+  "private_key_id": "a56d42fab086de9ecb0dd56846a8cdfefc78980f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQC5T1bbAqEW0i/+\npuDiUxC3DdtgqkarCiqNZ9gp/us+jFIRCPykg2j2AzL/JpeZZcgtun6tCqwfdz5A\n9sK6p45pB3wJzhC2zbxG56/nSRqLDbOQrsrw5+sk+0MIF2g0bcHcFhaaZdXWqTrC\n2J2MSq+VpX0zTfeECXr27xpmkEvHVTGOz5fOFv9kJMr1rvwFoeeDrea61+BxvEb/\njR5YPkdD4WLj7Rhu2Y4VV5lJSfz8b+w9q24Dli3qUDmoH+z397/uibOsPBbfHNwE\nElvCsvn4gTmQ9K76pNgdd1o+7pvwMBlkpzq6u/EbHMz0xaPncjb5UT1dT5Hr4F05\nOgE+TgZVAgMBAAECggEAS0c2smuEAyBJjPo/utEhpitD5iXl5U+Q77aysoSzDcq0\n/+SVtUMI3X95NPt5dEBLrH/pO+Rs/a9UI9HaUzcD/BilQ9ppIcm75VXzOFKTLM/Z\nFTpciLa96F0F4wCXPU0lBoIWlowt7TD8BPE4NyiT4YfDr5bJqOKtCCkjoWyWzBdV\nsA9Rdxa494YKUJnbvx334NsPZ7k6zOG18WHyX3CfY06mjdLgQDgFttaI/+7TNTP9\nVa+3jSG0BdkfjXYyQrgAZsNMLI/v3mMLqsZdsi15W6b7OE6/ErFcaxKa//o88ser\nxNp/AkXkHkwX9r9Lz8Br8E1cVTKuOJBCbxz98o849QKBgQD9rZTPe2FmnjgvxRm8\nwK/ijYYE6qIhFObNBU8aIqsywTv7orCgYZxhDcRMrtS60+ggJb/Wi9GmKemtlwE1\nlK0IpMFEgM0KgmEcUSw7qpFO3eukigB79KUU7waXsQEb16m9Ik/TmJoFIR3EVnzL\ni+bHfL9yUaG1jZVSs+PpINkBIwKBgQC7AY7FYHLOJdTlNKOhA3vwJSh8QP8djDwP\nFoXxz4XNa/s+k16pbXr3onuPPGh6TeyYC+jjKhlPkjINCYkbjk9oRK4MnA/bne3R\nRzPHEQOkktNxA29TRTphApUz9PfAYHuuf2Eu82QuHKFOdYBtq6HJFEO+4s1vVUJj\nDx3BRRxeJwKBgQDhXgfZeIRktWW3UsT1wr2/aPnKfmUBPN96/x9yWaB8m91dRgDi\nyzUxqBhgA+ZsAHy1qrPOuDLOC2hV1tS1NFuxVSV6ZW9DyebaUGcarwMe7Ns/N3cM\nqKDMgzn5I8CXaraal9QRaP5UVkJqvmdqMeUaDwLKXilq8NjbO4PcBlmjvwKBgFH0\n4s9Z77atGdrB8Rx13HFot4+NJMGcXg32vwk0+90Ff/zytT/nvUaeLSyfOuKvGAui\n3JQCNUmMNudD0JUFD4QQ5X6dPs3vLvTTEbwilsgfmQ8khDuoUWeGrEEzEQl8v3fA\nV6UuAi+7WG58TKbD24m2meIkoAg1A31KeK3lTgNtAn9ZbPcr9j/nExkOWM0pAx/p\niY7eHMGsVK7DxVbKBUiJiTpmwD4IgidHVeLfT5KqEIPFeDY1JV3NwNUTBzFaoKZB\nOrI4gV31ruJFs+z51MNhW7Jo6NkbkyPvs2jrtgwSF9LwSMn8BMYd6y6MfzcqvwFs\nZOFxuJAhAEZunuFxLnOf\n-----END PRIVATE KEY-----\n",
+  "client_email": "calendar-service@triple-nectar-467720-g4.iam.gserviceaccount.com",
+  "client_id": "106271606976360169955",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/calendar-service%40triple-nectar-467720-g4.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
