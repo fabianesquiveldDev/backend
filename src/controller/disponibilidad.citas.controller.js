@@ -69,7 +69,7 @@
         
         console.log(`📅 [${requestId}] Fecha: ${fecha.toISOString()}, Día semana: ${diaSemanaNum}`);
 
-            const horario = await MedicosModel.obtenerHorarioLaboral({ cve_medicos, dia_semana: diaSemana });
+            const horario = await MedicosModel.obtenerHorarioLaboral({ cve_medicos,cve_medico_consultorio, dia_semana: diaSemana });
         
         if (!horario) {
             console.warn(`⚠️ [${requestId}] No hay horario laboral para día ${diaSemanaNum} (médico ${cve_medicos})`);

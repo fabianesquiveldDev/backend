@@ -128,6 +128,39 @@ ORDER BY
     
     }
 
+    static async getSucusalesServicios() { 
+        try {
+
+            const query = `
+
+                        SELECT 
+                s.cve_sucursales,
+                s.nombre AS nombre_sucursal,
+                s.latitud,
+                s.longitud,
+                ARRAY(
+                    SELECT sv.nombre
+                    FROM sucursal_servicios ss
+                    JOIN servicios sv ON ss.cve_servicios = sv.cve_servicios
+                    WHERE ss.cve_sucursales = s.cve_sucursales
+                    AND ss.active = true
+                ) AS servicios_activos
+            FROM sucursales s
+            ORDER BY s.nombre;
+     
+            `;
+
+            const { rows } = await pool.query(query, []); 
+            return rows;
+        } catch (error) {
+            console.error("Error al obtener las suecursales_servicios de la base de datos:", error);
+            throw new Error("No se pudieron obtener las suecursales_servicios.");
+        }
+
+    
+    
+    }
+
     static async upsert({ cve_servicios, cve_sucursales, active }) {
         try {
             console.log('=== INICIO UPSERT ===');

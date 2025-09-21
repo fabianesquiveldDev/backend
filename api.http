@@ -65,7 +65,7 @@ curl http://localhost:3000/api/usuarios/check-username/felipesan
 curl http://localhost:3000/api/usuarios/1
 
 ### actualizar usuarios
-PATCH  http://localhost:3000/api/usuarios/6
+PATCH  http://localhost:3000/api/usuarios/26
 Content-Type: application/json
 
 {
@@ -395,7 +395,7 @@ curl http://localhost:3000/api/horarioLaboral/dias
 
 
 ###obtener los horario por cve_medico_consultorio
-curl http://localhost:3000/api/horarioLaboral/:cve
+curl http://localhost:3000/api/horarioLaboral/23
 
 
 ###DISPONIBILIDADES

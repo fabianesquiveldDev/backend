@@ -6,33 +6,47 @@ static async getOne({ cve }) { // Asumo que 'cve' aquí es cve_medico_consultori
     try {
         const query = `
             SELECT
-                d.cve_dias,
-                d.nombre AS nombre_dia,
-                -- Usamos COALESCE para asegurar que los valores sean NULL si no hay un horario  específico
-                hl.cve_horario_laboral,
-                hl.cve_medicos, 
-                hl.horario_inicio,
-                hl.horario_fin,
-                COALESCE(hl.activo, FALSE) AS horario_esta_activo, -- FALSE si no hay registro de horario
-                -- Siempre incluimos el cve_medico_consultorio que se está consultando para consistencia
-                $1 AS cve_medico_consultorio_consultado 
-            FROM
-                DIAS AS d
-            LEFT JOIN
-                HORARIO_LABORAL AS hl 
-                ON d.cve_dias = hl.cve_dias 
-                AND hl.cve_medico_consultorio = $1 -- Condición del JOIN para filtrar horarios solo de este cve_medico_consultorio
-            ORDER BY
-                CASE d.nombre 
-                    WHEN 'Lunes' THEN 1
-                    WHEN 'Martes' THEN 2
-                    WHEN 'Miércoles' THEN 3
-                    WHEN 'Jueves' THEN 4
-                    WHEN 'Viernes' THEN 5
-                    WHEN 'Sábado' THEN 6
-                    WHEN 'Domingo' THEN 7
-                    ELSE 8 
-                END ASC;
+    d.cve_dias,
+    d.nombre AS nombre_dia,
+    hl.cve_horario_laboral,
+    hl.cve_medicos, 
+    hl.horario_inicio,
+    hl.horario_fin,
+    COALESCE(hl.activo, FALSE) AS horario_esta_activo,
+    -- Verificación si el médico tiene este día asignado en otra sucursal (activo)
+    EXISTS (
+        SELECT 1 
+        FROM horario_laboral hl2
+        JOIN medicos_consultorios mc2 ON hl2.cve_medico_consultorio = mc2.cve_medico_consultorio
+        JOIN consultorios c2 ON mc2.cve_consultorios = c2.cve_consultorios
+        WHERE hl2.cve_dias = d.cve_dias
+          AND hl2.cve_medicos = (SELECT cve_medicos FROM medicos_consultorios WHERE cve_medico_consultorio = $1)
+          AND mc2.cve_medico_consultorio != $1
+          AND c2.cve_sucursales != (SELECT c.cve_sucursales 
+                                   FROM consultorios c
+                                   JOIN medicos_consultorios mc ON c.cve_consultorios = mc.cve_consultorios
+                                   WHERE mc.cve_medico_consultorio = $1)
+          AND hl2.activo = TRUE
+    ) AS dia_ocupado_en_otra_sucursal,
+    -- Devuelve siempre el cve_medico_consultorio solicitado para referencia
+    $1 AS cve_medico_consultorio_consultado
+FROM
+    dias AS d
+LEFT JOIN
+    horario_laboral AS hl 
+    ON d.cve_dias = hl.cve_dias 
+    AND hl.cve_medico_consultorio = $1
+ORDER BY
+    CASE d.nombre 
+        WHEN 'Lunes' THEN 1
+        WHEN 'Martes' THEN 2
+        WHEN 'Miércoles' THEN 3
+        WHEN 'Jueves' THEN 4
+        WHEN 'Viernes' THEN 5
+        WHEN 'Sábado' THEN 6
+        WHEN 'Domingo' THEN 7
+        ELSE 8 
+    END ASC;
         `;
         const { rows } = await pool.query(query, [cve]);
 

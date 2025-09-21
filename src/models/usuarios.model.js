@@ -270,50 +270,59 @@
     static async getSucursallocal({ cve }) {
     try {
         const query = `
-            SELECT 
-                (p.nombre || ' ' || p.paterno || ' ' || p.materno) AS nombre_doctor_completo,
-                m.cve_medicos AS cve_medicos,
-                STRING_AGG(DISTINCT e.nombre, ', ' ORDER BY e.nombre) AS especialidades,
-                p.email,
-                p.telefonos,
-                CASE 
-                    WHEN active_assignments.cve_medicos IS NOT NULL THEN TRUE 
-                    ELSE FALSE 
-                END AS esta_activo_en_esta_sucursal,
-                active_assignments.cve_medico_consultorio
-            FROM medicos AS m
-            INNER JOIN personas AS p ON p.cve_personas = m.cve_medicos
-            LEFT JOIN medicos_especialidades AS me ON m.cve_medicos = me.cve_medicos
-            LEFT JOIN especialidades AS e ON me.cve_especialidad = e.cve_especialidad
-            LEFT JOIN LATERAL (
-                SELECT 
-                    mc_sub.cve_medicos,
-                    mc_sub.cve_medico_consultorio
-                FROM medicos_consultorios AS mc_sub
-                INNER JOIN consultorios AS c_sub ON mc_sub.cve_consultorios = c_sub.cve_consultorios
-                WHERE mc_sub.cve_medicos = m.cve_medicos
-                    AND c_sub.cve_sucursales = $1
-                    AND mc_sub.activo = TRUE
-                    AND (mc_sub.fecha_fin IS NULL OR mc_sub.fecha_fin >= CURRENT_DATE)
-                LIMIT 1
-            ) AS active_assignments ON active_assignments.cve_medicos = m.cve_medicos
-            WHERE EXISTS (
-                SELECT 1
-                FROM medicos_consultorios AS mc_filter
-                INNER JOIN consultorios AS c_filter ON mc_filter.cve_consultorios = c_filter.cve_consultorios
-                WHERE mc_filter.cve_medicos = m.cve_medicos
-                    AND c_filter.cve_sucursales = $1
-            )
-            GROUP BY 
-                m.cve_medicos,
-                p.nombre,
-                p.paterno,
-                p.materno,
-                p.email,
-                p.telefonos,
-                active_assignments.cve_medicos,
-                active_assignments.cve_medico_consultorio
-            ORDER BY nombre_doctor_completo;
+         SELECT 
+    (p.nombre || ' ' || p.paterno || ' ' || p.materno) AS nombre_doctor_completo,
+    m.cve_medicos AS cve_medicos,
+    STRING_AGG(DISTINCT e.nombre, ', ' ORDER BY e.nombre) AS especialidades,
+    p.email,
+    p.telefonos,
+    CASE 
+        WHEN active_mc.cve_medico_consultorio IS NOT NULL THEN TRUE 
+        ELSE FALSE 
+    END AS esta_activo_en_esta_sucursal,
+    COALESCE(active_mc.cve_medico_consultorio, last_mc.cve_medico_consultorio) AS cve_medico_consultorio
+FROM medicos AS m
+INNER JOIN personas AS p ON p.cve_personas = m.cve_medicos
+LEFT JOIN medicos_especialidades AS me ON m.cve_medicos = me.cve_medicos
+LEFT JOIN especialidades AS e ON me.cve_especialidad = e.cve_especialidad
+-- JOIN para consultorio activo
+LEFT JOIN LATERAL (
+    SELECT mc.cve_medico_consultorio
+    FROM medicos_consultorios mc
+    INNER JOIN consultorios c ON mc.cve_consultorios = c.cve_consultorios
+    WHERE mc.cve_medicos = m.cve_medicos
+      AND c.cve_sucursales = $1
+      AND mc.activo = TRUE
+      AND (mc.fecha_fin IS NULL OR mc.fecha_fin >= CURRENT_DATE)
+    LIMIT 1
+) AS active_mc ON true
+-- JOIN para último consultorio asignado (incluso inactivo)
+LEFT JOIN LATERAL (
+    SELECT mc.cve_medico_consultorio
+    FROM medicos_consultorios mc
+    INNER JOIN consultorios c ON mc.cve_consultorios = c.cve_consultorios
+    WHERE mc.cve_medicos = m.cve_medicos
+      AND c.cve_sucursales = $1
+    ORDER BY mc.fecha_inicio DESC
+    LIMIT 1
+) AS last_mc ON true
+WHERE EXISTS (
+    SELECT 1
+    FROM medicos_consultorios mc
+    INNER JOIN consultorios c ON mc.cve_consultorios = c.cve_consultorios
+    WHERE mc.cve_medicos = m.cve_medicos
+      AND c.cve_sucursales = $1
+)
+GROUP BY 
+    m.cve_medicos,
+    p.nombre,
+    p.paterno,
+    p.materno,
+    p.email,
+    p.telefonos,
+    active_mc.cve_medico_consultorio,
+    last_mc.cve_medico_consultorio
+ORDER BY nombre_doctor_completo;
         `;
 
         const { rows } = await pool.query(query, [cve]);
