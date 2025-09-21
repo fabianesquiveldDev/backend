@@ -247,7 +247,11 @@ export class SucursalServiciosController {
 
     static async getSucusalesServicios(req, res) { 
             try {
+<<<<<<< HEAD
                 const sucursales_servicios = await SucursalServiciosModel.getSucusalesServicios();
+=======
+                const sucursales_servicios = await SucursalServiciosModel.getAll();
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c
                 res.json(sucursales_servicios);
             } catch (error) { 
                 console.error("Error en el controlador al obtener sucursales_servicios:", error);

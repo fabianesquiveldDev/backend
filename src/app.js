@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import express from 'express';
+=======
+﻿import express from 'express';
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c
 import dotenv from 'dotenv';
 import cors from 'cors';
 import {corsMiddleware } from './middlewares/cors.js' 
@@ -84,7 +88,33 @@ try {
     app.use('/api/graficas', graficasRoute);
     app.use('/api/auditoria', auditoriaRoute);
     } catch (err) {
+<<<<<<< HEAD
     console.error("🔥 Error al cargar rutas:", err);
     }
 
 export default app;
+=======
+    console.error("ðŸ”¥ Error al cargar rutas:", err);
+    }
+
+
+// Health check endpoint para Docker
+app.get('/health', (req, res) => {
+    res.status(200).json({
+        status: 'OK',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development'
+    });
+});
+
+// Endpoint raíz
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message: 'MediCitas Backend API',
+        version: '1.0.0',
+        status: 'running'
+    });
+});
+export default app;
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c

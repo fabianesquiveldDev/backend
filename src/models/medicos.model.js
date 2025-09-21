@@ -191,11 +191,16 @@ ORDER BY
         }
     }
 
+<<<<<<< HEAD
     static async obtenerHorarioLaboral({ cve_medicos,cve_medico_consultorio, dia_semana }) {
+=======
+    static async obtenerHorarioLaboral({ cve_medicos, dia_semana }) {
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c
         const query = `
             SELECT horario_inicio, horario_fin
             FROM horario_laboral
             WHERE cve_medicos = $1
+<<<<<<< HEAD
             AND cve_dias = $3
             AND activo = true
             AND cve_medico_consultorio = $2
@@ -204,6 +209,15 @@ ORDER BY
 
         console.log('Obteniendo horario laboral con:', { cve_medicos, cve_medico_consultorio, dia_semana });
         const { rows } = await pool.query(query, [cve_medicos, cve_medico_consultorio, dia_semana]);
+=======
+            AND cve_dias = $2
+            AND activo = true
+            LIMIT 1
+        `;
+
+        console.log('Obteniendo horario laboral con:', { cve_medicos, dia_semana });
+        const { rows } = await pool.query(query, [cve_medicos, dia_semana]);
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c
         console.log('horario_laboral rows:', rows);
         return rows[0] || null;
         }

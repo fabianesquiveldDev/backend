@@ -6,6 +6,7 @@ static async getOne({ cve }) { // Asumo que 'cve' aquí es cve_medico_consultori
     try {
         const query = `
             SELECT
+<<<<<<< HEAD
     d.cve_dias,
     d.nombre AS nombre_dia,
     hl.cve_horario_laboral,
@@ -47,6 +48,35 @@ ORDER BY
         WHEN 'Domingo' THEN 7
         ELSE 8 
     END ASC;
+=======
+                d.cve_dias,
+                d.nombre AS nombre_dia,
+                -- Usamos COALESCE para asegurar que los valores sean NULL si no hay un horario  específico
+                hl.cve_horario_laboral,
+                hl.cve_medicos, 
+                hl.horario_inicio,
+                hl.horario_fin,
+                COALESCE(hl.activo, FALSE) AS horario_esta_activo, -- FALSE si no hay registro de horario
+                -- Siempre incluimos el cve_medico_consultorio que se está consultando para consistencia
+                $1 AS cve_medico_consultorio_consultado 
+            FROM
+                DIAS AS d
+            LEFT JOIN
+                HORARIO_LABORAL AS hl 
+                ON d.cve_dias = hl.cve_dias 
+                AND hl.cve_medico_consultorio = $1 -- Condición del JOIN para filtrar horarios solo de este cve_medico_consultorio
+            ORDER BY
+                CASE d.nombre 
+                    WHEN 'Lunes' THEN 1
+                    WHEN 'Martes' THEN 2
+                    WHEN 'Miércoles' THEN 3
+                    WHEN 'Jueves' THEN 4
+                    WHEN 'Viernes' THEN 5
+                    WHEN 'Sábado' THEN 6
+                    WHEN 'Domingo' THEN 7
+                    ELSE 8 
+                END ASC;
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c
         `;
         const { rows } = await pool.query(query, [cve]);
 

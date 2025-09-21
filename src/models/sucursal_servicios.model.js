@@ -128,6 +128,7 @@ ORDER BY
     
     }
 
+<<<<<<< HEAD
     static async getSucusalesServicios() { 
         try {
 
@@ -161,6 +162,8 @@ ORDER BY
     
     }
 
+=======
+>>>>>>> 24914752ac825107d34852571f8363ada74da35c
     static async upsert({ cve_servicios, cve_sucursales, active }) {
         try {
             console.log('=== INICIO UPSERT ===');
