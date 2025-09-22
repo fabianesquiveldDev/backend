@@ -11,7 +11,7 @@ export class SucursalServiciosModel {
 
         const query = `
             INSERT INTO sucursal_servicios (
-                cve_servicios,cve_sucursales,active
+                cve_servicios, cve_sucursales, active
             )
             VALUES ($1, $2, $3)
             RETURNING *;
@@ -24,16 +24,16 @@ export class SucursalServiciosModel {
         ];
 
         try {
-            console.log('Query:', query); // Debug
-            console.log('Values:', values); // Debug
+            console.log('Query:', query);
+            console.log('Values:', values);
             
             const { rows } = await pool.query(query, values);
             return rows[0];
         } catch (err) {
-            console.error('Error completo:', err); // Ver error completo
-            console.error('Error message:', err.message); // Ver mensaje específico
-            console.error('Error code:', err.code); // Ver código de error
-            throw err; // Lanzar el error original, no uno genérico
+            console.error('Error completo:', err);
+            console.error('Error message:', err.message);
+            console.error('Error code:', err.code);
+            throw err;
         }
     }
 
@@ -49,7 +49,7 @@ export class SucursalServiciosModel {
             return rows[0];
         } catch (err) {
             console.error('Error al obtener sucursales:', err);
-            throw new Error('Error al buscar sucrsales en la base de datos');
+            throw new Error('Error al buscar sucursales en la base de datos');
         }
     }
 
@@ -83,11 +83,11 @@ export class SucursalServiciosModel {
 
             // 5. Verificar si se actualizó algún registro
             if (result.rowCount === 0) {
-                console.log(`No se encontró sucursales_servicios con CVE: ${cve}`);
+                console.log(`No se encontró sucursal_servicios con CVE: ${cve}`);
                 return null;
             }
 
-            console.log(`sucursales_servicios con CVE ${cve} actualizada exitosamente`);
+            console.log(`Sucursal_servicios con CVE ${cve} actualizado exitosamente`);
             return result.rows[0];
 
         } catch (error) {
@@ -96,74 +96,60 @@ export class SucursalServiciosModel {
         }
     }
 
-    static async getAll({cve}) { 
+    static async getAll({ cve }) { 
         try {
-
             const query = `
-       SELECT
-    SU.cve_sucursales,
-    SU.nombre AS nombre_sucursal,
-    CASE
-        WHEN SS.cve_servicios IS NOT NULL AND SS.active = TRUE THEN TRUE
-        ELSE FALSE
-    END AS esta_activo
-FROM
-    sucursales AS SU
-LEFT JOIN
-    sucursal_servicios AS SS
-ON SU.cve_sucursales = SS.cve_sucursales
-AND SS.cve_servicios = $1
-ORDER BY
-    nombre_sucursal;
+                SELECT
+                    SU.cve_sucursales,
+                    SU.nombre AS nombre_sucursal,
+                    CASE
+                        WHEN SS.cve_servicios IS NOT NULL AND SS.active = TRUE THEN TRUE
+                        ELSE FALSE
+                    END AS esta_activo
+                FROM
+                    sucursales AS SU
+                LEFT JOIN
+                    sucursal_servicios AS SS ON SU.cve_sucursales = SS.cve_sucursales
+                    AND SS.cve_servicios = $1
+                ORDER BY
+                    nombre_sucursal;
             `;
 
             const { rows } = await pool.query(query, [cve]); 
             return rows;
         } catch (error) {
-            console.error("Error al obtener las suecursales_servicios de la base de datos:", error);
-            throw new Error("No se pudieron obtener las suecursales_servicios.");
+            console.error("Error al obtener las sucursales_servicios de la base de datos:", error);
+            throw new Error("No se pudieron obtener las sucursales_servicios.");
         }
-
-    
-    
     }
 
-<<<<<<< HEAD
-    static async getSucusalesServicios() { 
+    static async getSucursalesServicios() { 
         try {
-
             const query = `
-
-                        SELECT 
-                s.cve_sucursales,
-                s.nombre AS nombre_sucursal,
-                s.latitud,
-                s.longitud,
-                ARRAY(
-                    SELECT sv.nombre
-                    FROM sucursal_servicios ss
-                    JOIN servicios sv ON ss.cve_servicios = sv.cve_servicios
-                    WHERE ss.cve_sucursales = s.cve_sucursales
-                    AND ss.active = true
-                ) AS servicios_activos
-            FROM sucursales s
-            ORDER BY s.nombre;
-     
+                SELECT 
+                    s.cve_sucursales,
+                    s.nombre AS nombre_sucursal,
+                    s.latitud,
+                    s.longitud,
+                    ARRAY(
+                        SELECT sv.nombre
+                        FROM sucursal_servicios ss
+                        JOIN servicios sv ON ss.cve_servicios = sv.cve_servicios
+                        WHERE ss.cve_sucursales = s.cve_sucursales
+                        AND ss.active = true
+                    ) AS servicios_activos
+                FROM sucursales s
+                ORDER BY s.nombre;
             `;
 
-            const { rows } = await pool.query(query, []); 
+            const { rows } = await pool.query(query); 
             return rows;
         } catch (error) {
-            console.error("Error al obtener las suecursales_servicios de la base de datos:", error);
-            throw new Error("No se pudieron obtener las suecursales_servicios.");
+            console.error("Error al obtener las sucursales_servicios de la base de datos:", error);
+            throw new Error("No se pudieron obtener las sucursales_servicios.");
         }
-
-    
-    
     }
 
-=======
->>>>>>> 24914752ac825107d34852571f8363ada74da35c
     static async upsert({ cve_servicios, cve_sucursales, active }) {
         try {
             console.log('=== INICIO UPSERT ===');
@@ -257,18 +243,21 @@ ORDER BY
             throw error;
         }
     }
-
     
     static async obtenerTodosPlayerIdsMoviles() {
-    const query = `
-        SELECT player_id, cve_usuarios
-        FROM dispositivos_usuarios
-        WHERE player_id IS NOT NULL
-        AND plataforma = 'mobile'
-    `;
-    const result = await pool.query(query);
-    return result.rows; // devuelve array de { cve_usuarios, player_id }
-}
-
-
+        try {
+            const query = `
+                SELECT player_id, cve_usuarios
+                FROM dispositivos_usuarios
+                WHERE player_id IS NOT NULL
+                AND plataforma = 'mobile';
+            `;
+            
+            const result = await pool.query(query);
+            return result.rows; // devuelve array de { cve_usuarios, player_id }
+        } catch (error) {
+            console.error('Error al obtener player IDs móviles:', error);
+            throw new Error('Error al buscar player IDs móviles en la base de datos');
+        }
+    }
 }
