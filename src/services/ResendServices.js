@@ -1,31 +1,25 @@
-// ❌ Remover estas líneas para Railway
-// import { config } from "dotenv";
-// config();
-
-// ✅ Solo cargar dotenv en desarrollo local
-if (process.env.NODE_ENV !== 'production' && !process.env.RAILWAY_ENVIRONMENT) {
-  try {
-    const { config } = await import('dotenv');
-    config();
-  } catch (e) {
-    // dotenv no está disponible en producción, ignorar
-  }
-}
-
 import { Resend } from 'resend';
 
 // 🔍 DEBUG: Verificar la API key
 console.log('🔑 RESEND_API_KEY existe:', process.env.RESEND_API_KEY ? 'SÍ' : 'NO');
 console.log('🔑 RESEND_API_KEY empieza con re_:', process.env.RESEND_API_KEY?.startsWith('re_'));
 
+// ❌ NO HACER CRASH - Solo warning
 if (!process.env.RESEND_API_KEY) {
-    throw new Error('❌ RESEND_API_KEY no está definida en las variables de entorno');
+    console.warn('❌ RESEND_API_KEY no está definida - emails no funcionarán');
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ✅ Crear resend incluso si no hay API key (evitar crash)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export const enviarCorreo = async ({ para, asunto, textoPlano, html, attachments = [] }) => {
     try {
+        // Verificar si resend está disponible
+        if (!resend) {
+            console.error('❌ Resend no está configurado - RESEND_API_KEY faltante');
+            throw new Error('Servicio de email no está disponible');
+        }
+
         // 🔍 DEBUG: Verificar qué estamos recibiendo
         console.log('🔍 DEBUG CORREO:');
         console.log('   para (tipo):', typeof para);
@@ -49,7 +43,7 @@ export const enviarCorreo = async ({ para, asunto, textoPlano, html, attachments
 
         const emailData = {
             from: 'MediCitas <citas@medicitas.site>',
-            to: emailLimpio, // ✅ Usar email limpio
+            to: emailLimpio,
             subject: asunto,
             text: textoPlano,
             html: html,
