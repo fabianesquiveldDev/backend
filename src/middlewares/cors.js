@@ -6,7 +6,8 @@ const ACCEPTED_ORIGINS = [
     'http://localhost:1234',
     'https://movies.com',
     'https://midu.dev',
-    'https://app-admin-medicitas-lqciustkl-fabians-projects-e8fa0f2d.vercel.app' 
+    'https://app-admin-medicitas-lqciustkl-fabians-projects-e8fa0f2d.vercel.app',
+    'https://medicitas.site'
 ]
 
 export const corsMiddleware = ({ acceptedOrigins = ACCEPTED_ORIGINS } = {}) => {
