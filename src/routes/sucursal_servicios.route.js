@@ -6,7 +6,7 @@ const serviciosSucursalesRoute = Router();
 
 serviciosSucursalesRoute.post ('/', SucursalServiciosController.crear);
 serviciosSucursalesRoute.get('/todos/:cve', SucursalServiciosController.getAll);
-serviciosSucursalesRoute.get('/sucursalesServiciosAll', SucursalServiciosController.getSucusalesServicios);
+//serviciosSucursalesRoute.get('/sucursalesServiciosAll', SucursalServiciosController.getSucusalesServicios);
 serviciosSucursalesRoute.patch('/:cve', SucursalServiciosController.update);
 serviciosSucursalesRoute.post('/upsert', SucursalServiciosController.upsert);
 
