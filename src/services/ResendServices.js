@@ -1,7 +1,26 @@
-import { config } from "dotenv";
-config();
+// ❌ Remover estas líneas para Railway
+// import { config } from "dotenv";
+// config();
+
+// ✅ Solo cargar dotenv en desarrollo local
+if (process.env.NODE_ENV !== 'production' && !process.env.RAILWAY_ENVIRONMENT) {
+  try {
+    const { config } = await import('dotenv');
+    config();
+  } catch (e) {
+    // dotenv no está disponible en producción, ignorar
+  }
+}
 
 import { Resend } from 'resend';
+
+// 🔍 DEBUG: Verificar la API key
+console.log('🔑 RESEND_API_KEY existe:', process.env.RESEND_API_KEY ? 'SÍ' : 'NO');
+console.log('🔑 RESEND_API_KEY empieza con re_:', process.env.RESEND_API_KEY?.startsWith('re_'));
+
+if (!process.env.RESEND_API_KEY) {
+    throw new Error('❌ RESEND_API_KEY no está definida en las variables de entorno');
+}
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
