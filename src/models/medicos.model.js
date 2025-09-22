@@ -12,7 +12,7 @@ export class MedicosModel {
 
         const query = `
             INSERT INTO medicos (
-                cve_medicos, cedulas_profesionales, fecha_ingreso,activo
+                cve_medicos, cedulas_profesionales, fecha_ingreso, activo
             )
             VALUES ($1, $2, $3, $4)
             RETURNING *;
@@ -26,43 +26,45 @@ export class MedicosModel {
         ];
 
         try {
-            console.log('Query:', query); // Debug
-            console.log('Values:', values); // Debug
+            console.log('Query:', query);
+            console.log('Values:', values);
             
             const { rows } = await pool.query(query, values);
             return rows[0];
         } catch (err) {
-            console.error('Error completo:', err); // Ver error completo
-            console.error('Error message:', err.message); // Ver mensaje específico
-            console.error('Error code:', err.code); // Ver código de error
-            throw err; // Lanzar el error original, no uno genérico
+            console.error('Error completo:', err);
+            console.error('Error message:', err.message);
+            console.error('Error code:', err.code);
+            throw err;
         }
     }
 
     static async getOne({ cve }) {
         try {
             const query = `
-SELECT
-    m.cve_medicos,
-    m.cedulas_profesionales,
-    m.fecha_ingreso,
-    m.activo AS medico_activo,
-    COALESCE(STRING_AGG(e.nombre, ', ' ORDER BY e.nombre), '') AS especialidades_del_medico
-FROM
-    medicos AS m
-LEFT JOIN
-    medicos_especialidades AS me ON m.cve_medicos = me.cve_medicos
-LEFT JOIN
-    especialidades AS e ON me.cve_especialidad = e.cve_especialidad
-WHERE
-    m.cve_medicos =  $1 
-GROUP BY
-    m.cve_medicos,
-    m.cedulas_profesionales,
-    m.fecha_ingreso,
-    m.activo
-ORDER BY
-    m.cve_medicos;`;
+                SELECT
+                    m.cve_medicos,
+                    m.cedulas_profesionales,
+                    m.fecha_ingreso,
+                    m.activo AS medico_activo,
+                    COALESCE(STRING_AGG(e.nombre, ', ' ORDER BY e.nombre), '') AS especialidades_del_medico
+                FROM
+                    medicos AS m
+                LEFT JOIN
+                    medicos_especialidades AS me ON m.cve_medicos = me.cve_medicos
+                LEFT JOIN
+                    especialidades AS e ON me.cve_especialidad = e.cve_especialidad
+                WHERE
+                    m.cve_medicos = $1 
+                GROUP BY
+                    m.cve_medicos,
+                    m.cedulas_profesionales,
+                    m.fecha_ingreso,
+                    m.activo
+                ORDER BY
+                    m.cve_medicos;
+            `;
+            
             const { rows } = await pool.query(query, [cve]);
             
             if (rows.length === 0) {
@@ -71,8 +73,8 @@ ORDER BY
             
             return rows[0];
         } catch (err) {
-            console.error('Error al obtener medicos:', err);
-            throw new Error('Error al buscar medicos en la base de datos');
+            console.error('Error al obtener médicos:', err);
+            throw new Error('Error al buscar médicos en la base de datos');
         }
     }
 
@@ -106,11 +108,11 @@ ORDER BY
 
             // 5. Verificar si se actualizó algún registro
             if (result.rowCount === 0) {
-                console.log(`No se encontró persona con CVE: ${cve}`);
+                console.log(`No se encontró médico con CVE: ${cve}`);
                 return null;
             }
 
-            console.log(`paciente con CVE ${cve} actualizada exitosamente`);
+            console.log(`Médico con CVE ${cve} actualizado exitosamente`);
             return result.rows[0];
 
         } catch (error) {
@@ -121,31 +123,30 @@ ORDER BY
 
     static async getAll() { 
         try {
-
             const query = `
-                        SELECT
-                            p.cve_personas,
-                            TRIM(CONCAT_WS(' ', p.nombre, p.paterno, p.materno)) AS nombre_completo_medico,
-                            p.telefonos,
-                            p.email,
-                            m.fecha_ingreso,
-                            m.cedulas_profesionales,
-                            u.activo AS estado_activo_usuario
-                        FROM
-                            personas AS p
-                        INNER JOIN
-                            usuarios AS u ON p.cve_personas = u.cve_usuarios
-                        INNER JOIN
-                            medicos AS m ON m.cve_medicos = p.cve_personas
-                        ORDER BY
-                            nombre_completo_medico ASC; 
-                            `;
+                SELECT
+                    p.cve_personas,
+                    TRIM(CONCAT_WS(' ', p.nombre, p.paterno, p.materno)) AS nombre_completo_medico,
+                    p.telefonos,
+                    p.email,
+                    m.fecha_ingreso,
+                    m.cedulas_profesionales,
+                    u.activo AS estado_activo_usuario
+                FROM
+                    personas AS p
+                INNER JOIN
+                    usuarios AS u ON p.cve_personas = u.cve_usuarios
+                INNER JOIN
+                    medicos AS m ON m.cve_medicos = p.cve_personas
+                ORDER BY
+                    nombre_completo_medico ASC; 
+            `;
 
             const { rows } = await pool.query(query); 
             return rows;
         } catch (error) {
-            console.error("Error al obtener las especialidades de la base de datos:", error);
-            throw new Error("No se pudieron obtener las especialidades.");
+            console.error("Error al obtener los médicos de la base de datos:", error);
+            throw new Error("No se pudieron obtener los médicos.");
         }
     }
 
@@ -178,6 +179,7 @@ ORDER BY
                 ORDER BY
                     s.nombre;
             `;
+            
             const { rows } = await pool.query(query, [cve]);
             
             if (rows.length === 0) {
@@ -191,54 +193,58 @@ ORDER BY
         }
     }
 
-<<<<<<< HEAD
-    static async obtenerHorarioLaboral({ cve_medicos,cve_medico_consultorio, dia_semana }) {
-=======
-    static async obtenerHorarioLaboral({ cve_medicos, dia_semana }) {
->>>>>>> 24914752ac825107d34852571f8363ada74da35c
-        const query = `
-            SELECT horario_inicio, horario_fin
-            FROM horario_laboral
-            WHERE cve_medicos = $1
-<<<<<<< HEAD
-            AND cve_dias = $3
-            AND activo = true
-            AND cve_medico_consultorio = $2
-            LIMIT 1
-        `;
+    static async obtenerHorarioLaboral({ cve_medicos, cve_medico_consultorio, dia_semana }) {
+        try {
+            const query = `
+                SELECT horario_inicio, horario_fin
+                FROM horario_laboral
+                WHERE cve_medicos = $1
+                AND cve_medico_consultorio = $2
+                AND cve_dias = $3
+                AND activo = true
+                LIMIT 1;
+            `;
 
-        console.log('Obteniendo horario laboral con:', { cve_medicos, cve_medico_consultorio, dia_semana });
-        const { rows } = await pool.query(query, [cve_medicos, cve_medico_consultorio, dia_semana]);
-=======
-            AND cve_dias = $2
-            AND activo = true
-            LIMIT 1
-        `;
-
-        console.log('Obteniendo horario laboral con:', { cve_medicos, dia_semana });
-        const { rows } = await pool.query(query, [cve_medicos, dia_semana]);
->>>>>>> 24914752ac825107d34852571f8363ada74da35c
-        console.log('horario_laboral rows:', rows);
-        return rows[0] || null;
+            console.log('Obteniendo horario laboral con:', { cve_medicos, cve_medico_consultorio, dia_semana });
+            const { rows } = await pool.query(query, [cve_medicos, cve_medico_consultorio, dia_semana]);
+            console.log('horario_laboral rows:', rows);
+            return rows[0] || null;
+        } catch (error) {
+            console.error('Error al obtener horario laboral:', error);
+            throw new Error('Error al buscar horario laboral en la base de datos');
         }
-
+    }
 
     static async obtenerCveMedicoDesdeConsultorio(cve_medico_consultorio) {
-        const query = `
-            SELECT cve_medicos
-            FROM medicos_consultorios
-            WHERE cve_medico_consultorio = $1
-        `;
-        const { rows } = await pool.query(query, [cve_medico_consultorio]);
-        return rows.length > 0 ? rows[0].cve_medicos : null;
+        try {
+            const query = `
+                SELECT cve_medicos
+                FROM medicos_consultorios
+                WHERE cve_medico_consultorio = $1;
+            `;
+            
+            const { rows } = await pool.query(query, [cve_medico_consultorio]);
+            return rows.length > 0 ? rows[0].cve_medicos : null;
+        } catch (error) {
+            console.error('Error al obtener CVE médico desde consultorio:', error);
+            throw new Error('Error al buscar CVE médico en la base de datos');
+        }
     }
 
-    static async obtenerEmailMedicos (cve_medicos){
-        const query = `
-        
-        `;
-        const { rows } = await pool.query(query, [cve_medicos]);
-        return rows.length > 0 ? rows[0].cve_medicos : null;
+    static async obtenerEmailMedicos(cve_medicos) {
+        try {
+            const query = `
+                SELECT p.email
+                FROM personas AS p
+                INNER JOIN medicos AS m ON p.cve_personas = m.cve_medicos
+                WHERE m.cve_medicos = $1;
+            `;
+            
+            const { rows } = await pool.query(query, [cve_medicos]);
+            return rows.length > 0 ? rows[0].email : null;
+        } catch (error) {
+            console.error('Error al obtener email del médico:', error);
+            throw new Error('Error al buscar email del médico en la base de datos');
+        }
     }
-
 }
